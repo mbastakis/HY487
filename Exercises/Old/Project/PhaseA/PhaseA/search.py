@@ -133,13 +133,13 @@ def breadthFirstSearch(problem):
 
     while not queue.isEmpty():
         currNode, actions = queue.pop()
-
-        if problem.isGoalState(currNode):
-            return actions
-        
-        for nextNode, action, cost in problem.getSuccessors(currNode):
-            if nextNode not in discoveredNodes:
-                discoveredNodes.append(nextNode)
+        if currNode not in discoveredNodes:
+            discoveredNodes.append(currNode)
+            
+            if problem.isGoalState(currNode):
+                return actions
+            
+            for nextNode, action, cost in problem.getSuccessors(currNode):
                 queue.push((nextNode, actions + [action]))
 
     return []
@@ -160,8 +160,32 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    
+    startingNode = problem.getStartState()
+    if problem.isGoalState(startingNode):
+        return []
 
-    util.raiseNotDefined()
+    openNodeList = util.PriorityQueue()
+    closedNodeList = []
+
+    openNodeList.push((startingNode, [], 0), 0)
+
+    while not openNodeList.isEmpty():
+        currNode, actions, prevCost = openNodeList.pop()
+
+        if currNode not in closedNodeList:
+            closedNodeList.append(currNode)
+
+            if problem.isGoalState(currNode):
+                return actions
+            
+            for nextNode, action, cost in problem.getSuccessors(currNode):
+                newActions = actions + [action]
+                newCostToNode = prevCost + cost
+                heuristicCost = newCostToNode + heuristic(nextNode, problem)
+                openNodeList.push((nextNode, newActions, newCostToNode), heuristicCost)
+
+    return []
 
 
 
