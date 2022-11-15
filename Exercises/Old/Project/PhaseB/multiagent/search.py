@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-#
+# 
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -18,7 +18,6 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
-
 
 class SearchProblem:
     """
@@ -71,8 +70,7 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return [s, s, w, s, w, w, s, w]
-
+    return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem):
     """
@@ -86,106 +84,84 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
 
-    """***CODE CSD4406***"""
-    # Prints I tested for help
-    # print(problem)
-    # print("Start:", problem.getStartState())
-    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    # t = problem.getStartState()
-    # print(t)
-    # temp = problem.getSuccessors(t)
-    # print(temp[0][0])
-    # print("Next,", problem.getSuccessors(temp[0][0]))
+    "*** YOUR CODE HERE ***"
 
-    from util import Stack
-    stack = util.Stack()
-    visitedCoords = []
-
-    # If startingCoords is the same with goalState
-    startingCoords = problem.getStartState()
-    if problem.isGoalState(startingCoords):
+    startingNode = problem.getStartState()
+    if problem.isGoalState(startingNode):
         return []
 
-    # Push source tuple to stack. tuple = (Current State, Path from starting state)
-    stack.push((startingCoords, []))
+    myQueue = util.Stack()
+    visitedNodes = []
+    # (node,actions)
+    myQueue.push((startingNode, []))
 
-    while not stack.isEmpty():
-        # Get information from current state
-        currCoords, currPath = stack.pop()
-        # Stack may have duplicate states, if state is not visited
-        if currCoords not in visitedCoords:
-            # Visit current state
-            visitedCoords.append(currCoords)
-            # Check if current state is the goal state
-            if problem.isGoalState(currCoords):
-                print("Current Path:", currPath)
-                print("Length:", len(currPath))
-                return currPath
-            # Expand currCoords and add to stack every successor
-            for successor in problem.getSuccessors(currCoords):
-                nextCoords = successor[0]
-                moveDirection = successor[1]
-                # Find path for new coordinates
-                nextPath = currPath + [moveDirection]
-                # Push the new coordinates to the stack
-                stack.push((nextCoords, nextPath))
+    while not myQueue.isEmpty():
+        currentNode, actions = myQueue.pop()
+        if currentNode not in visitedNodes:
+            visitedNodes.append(currentNode)
 
-    # Stack was empty, search failed couldn't find solution
-    return []
+            if problem.isGoalState(currentNode):
+                return actions
 
+            for nextNode, action, cost in problem.getSuccessors(currentNode):
+                newAction = actions + [action]
+                myQueue.push((nextNode, newAction))
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    """
-    *** CODE CSD4406***
-    Breadth first search has the exact same algorithm, the only difference is that 
-    instead of a stack for the fringe we use a queue
-    """
+    "*** YOUR CODE HERE ***"
 
-    from util import Queue
-    queue = util.Queue()
-    visitedCoords = []
-
-    # If startingCoords is the same with goalState
-    startingCoords = problem.getStartState()
-    if problem.isGoalState(startingCoords):
+    startingNode = problem.getStartState()
+    if problem.isGoalState(startingNode):
         return []
 
-    # Push source tuple to queue. tuple = (Current State, Path from starting state)
-    queue.push((startingCoords, []))
+    myQueue = util.Queue()
+    visitedNodes = []
+    # (node,actions)
+    myQueue.push((startingNode, []))
 
-    while not queue.isEmpty():
-        # Get information from current state
-        currCoords, currPath = queue.pop()
-        # Queue may have duplicate states, if state is not visited
-        if currCoords not in visitedCoords:
-            # Visit current state
-            visitedCoords.append(currCoords)
-            # Check if current state is the goal state
-            if problem.isGoalState(currCoords):
-                print("Current Path:", currPath)
-                print("Length:", len(currPath))
-                return currPath
-            # Expand currCoords and add to queue every successor
-            for successor in problem.getSuccessors(currCoords):
-                nextCoords = successor[0]
-                moveDirection = successor[1]
-                # Find path for new coordinates
-                nextPath = currPath + [moveDirection]
-                # Push the new coordinates to the queue
-                queue.push((nextCoords, nextPath))
+    while not myQueue.isEmpty():
+        currentNode, actions = myQueue.pop()
+        if currentNode not in visitedNodes:
+            visitedNodes.append(currentNode)
 
-    # Queue was empty, search failed couldn't find solution
-    return []
+            if problem.isGoalState(currentNode):
+                return actions
 
+            for nextNode, action, cost in problem.getSuccessors(currentNode):
+                newAction = actions + [action]
+                myQueue.push((nextNode, newAction))
+
+    util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
 
-    util.raiseNotDefined()
+    startingNode = problem.getStartState()
+    if problem.isGoalState(startingNode):
+        return []
 
+    visitedNodes = []
+
+    pQueue = util.PriorityQueue()
+    #((coordinate/node , action to current node , cost to current node),priority)
+    pQueue.push((startingNode, [], 0), 0)
+
+    while not pQueue.isEmpty():
+
+        currentNode, actions, prevCost = pQueue.pop()
+        if currentNode not in visitedNodes:
+            visitedNodes.append(currentNode)
+
+            if problem.isGoalState(currentNode):
+                return actions
+
+            for nextNode, action, cost in problem.getSuccessors(currentNode):
+                newAction = actions + [action]
+                priority = prevCost + cost
+                pQueue.push((nextNode, newAction, priority),priority)
+    util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -194,12 +170,38 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
 
+    startingNode = problem.getStartState()
+    if problem.isGoalState(startingNode):
+        return []
+
+    visitedNodes = []
+
+    pQueue = util.PriorityQueue()
+    #((coordinate/node , action to current node , cost to current node),priority)
+    pQueue.push((startingNode, [], 0), 0)
+
+    while not pQueue.isEmpty():
+
+        currentNode, actions, prevCost = pQueue.pop()
+
+        if currentNode not in visitedNodes:
+            visitedNodes.append(currentNode)
+
+            if problem.isGoalState(currentNode):
+                return actions
+
+            for nextNode, action, cost in problem.getSuccessors(currentNode):
+                newAction = actions + [action]
+                newCostToNode = prevCost + cost
+                heuristicCost = newCostToNode + heuristic(nextNode,problem)
+                pQueue.push((nextNode, newAction, newCostToNode),heuristicCost)
+
     util.raiseNotDefined()
+
 
 
 # Abbreviations
