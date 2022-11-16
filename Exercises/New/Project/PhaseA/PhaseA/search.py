@@ -99,7 +99,7 @@ def depthFirstSearch(problem):
     # print("Next,", problem.getSuccessors(temp[0][0]))
 
     from util import Stack
-    stack = util.Stack()
+    stack = Stack()
     visitedCoords = []
 
     # If startingCoords is the same with goalState
@@ -107,17 +107,17 @@ def depthFirstSearch(problem):
     if problem.isGoalState(startingCoords):
         return []
 
-    # Push source tuple to stack. tuple = (Current State, Path from starting state)
+    # Push source tuple to stack. tuple = (Current Coords, Path from starting coords)
     stack.push((startingCoords, []))
 
     while not stack.isEmpty():
         # Get information from current state
         currCoords, currPath = stack.pop()
-        # Stack may have duplicate states, if state is not visited
+        # Stack may have duplicate coords, if coords are not visited
         if currCoords not in visitedCoords:
-            # Visit current state
+            # Visit current coords
             visitedCoords.append(currCoords)
-            # Check if current state is the goal state
+            # Check if current coords is the goal state
             if problem.isGoalState(currCoords):
                 print("Current Path:", currPath)
                 print("Length:", len(currPath))
@@ -144,7 +144,7 @@ def breadthFirstSearch(problem):
     """
 
     from util import Queue
-    queue = util.Queue()
+    queue = Queue()
     visitedCoords = []
 
     # If startingCoords is the same with goalState
@@ -152,17 +152,17 @@ def breadthFirstSearch(problem):
     if problem.isGoalState(startingCoords):
         return []
 
-    # Push source tuple to queue. tuple = (Current State, Path from starting state)
+    # Push source tuple to queue. tuple = (Current coords, Path from starting coords)
     queue.push((startingCoords, []))
 
     while not queue.isEmpty():
         # Get information from current state
         currCoords, currPath = queue.pop()
-        # Queue may have duplicate states, if state is not visited
+        # Queue may have duplicate coords, if coords are not visited
         if currCoords not in visitedCoords:
-            # Visit current state
+            # Visit current coords
             visitedCoords.append(currCoords)
-            # Check if current state is the goal state
+            # Check if current coords is the goal state
             if problem.isGoalState(currCoords):
                 print("Current Path:", currPath)
                 print("Length:", len(currPath))
@@ -197,9 +197,55 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
+    """
+    ***CODE CSD4406***
+    Again the code is similar with DFS and BFS code but instead we use a
+    priority queue and we assign costs to each coordinate
+    """
+    from util import PriorityQueue
+    # A list of coordinates which have been visited,
+    # but neighboring coordinates still haven't
+    openList = PriorityQueue()
+    # A list of coordinates which have been visited,
+    # and neighboring coordinates have also been expanded
+    closedList = []
 
-    util.raiseNotDefined()
+    # If startingCoords is the same with goalState
+    startingCoords = problem.getStartState()
+    if problem.isGoalState(startingCoords):
+        return []
+
+    startNode = {
+        "coords": startingCoords,
+        "path": [],
+        "cost": 0
+    }
+    # Push starting node with priority 0
+    openList.push(startNode, 0)
+
+    while not openList.isEmpty():
+        currentNode = openList.pop()
+        # Priority Queue may have duplicate cords, if state is not visited
+        if currentNode["coords"] not in closedList:
+            # Visit current coords
+            closedList.append(currentNode["coords"])
+            # Check if current coords is the goal state
+            if problem.isGoalState(currentNode["coords"]):
+                print("Current Path:", currentNode["path"])
+                print("Length:", len(currentNode["path"]))
+                return currentNode["path"]
+            # Expand currCoords and add to priority queue every successor
+            for successor in problem.getSuccessors(currentNode["coords"]):
+                # Create and push node for current successor
+                node = {
+                    "coords": successor[0],
+                    "path": currentNode["path"] + [successor[1]],
+                    "cost": currentNode["cost"] + successor[2]
+                }
+                # Find f cost using g and h cost -> f(n) = g(n) + h(n)
+                f_cost = node["cost"] + heuristic(node["coords"], problem)
+                # Push the new coordinates to the queue
+                openList.push(node, f_cost)
 
 
 # Abbreviations
