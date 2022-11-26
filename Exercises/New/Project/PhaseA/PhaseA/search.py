@@ -86,7 +86,9 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
 
-    """***CODE CSD4406***"""
+    """***CODE CSD4406***
+    The code for this algorithm was inspired by https://www.geeksforgeeks.org/iterative-depth-first-traversal/
+    """
     # Prints I tested for help
     # print(problem)
     # print("Start:", problem.getStartState())
@@ -196,8 +198,8 @@ def nullHeuristic(state, problem=None):
 
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    """
+    """Search the node that has the lowest combined cost and heuristic first.
+
     ***CODE CSD4406***
     Again the code is similar with DFS and BFS code but instead we use a
     priority queue and we assign costs to each coordinate

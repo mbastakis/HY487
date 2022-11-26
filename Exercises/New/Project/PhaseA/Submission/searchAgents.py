@@ -486,19 +486,18 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
     # Get a list of all food coordinates
     foodCoordsList = foodGrid.asList()
-    # problem.heuristicInfo['wallCount'] = problem.walls.count()
     # If we are at the goal state
     if problem.isGoalState(state):
         return 0
 
-    distance = []
+    maxFoodDistance = 0
     # Find real distances between current coordinates and all of the food
     # using already implemented mazeDistance function
     for foodCoords in foodCoordsList:
-        distance.append(mazeDistance(
-            position, foodCoords, problem.startingGameState))
-
-    return max(distance)
+        currentFoodDistance = mazeDistance(position, foodCoords, problem.startingGameState)
+        maxFoodDistance = currentFoodDistance if maxFoodDistance < currentFoodDistance else maxFoodDistance
+            
+    return maxFoodDistance
 
 
 class ClosestDotSearchAgent(SearchAgent):
