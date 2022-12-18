@@ -39,7 +39,7 @@ class ReflexAgent(Agent):
         """
         # Collect legal moves and successor states
         legalMoves = gameState.getLegalActions()
-
+        
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
@@ -70,33 +70,27 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** CSD4406 CODE ***"
-        nearbyGhostScore = 0
-        numOfGhosts = len(successorGameState.getGhostPositions())
-        for ghostPos in successorGameState.getGhostPositions():
-          # Find current Distance between player and ghost
-          currentDist = manhattanDistance(ghostPos, newPos)
-          # If ghost is at player return lowest score possible
-          if newPos == ghostPos:
-            return sys.float_info.min
-          # Calculate score based on the proximity of ghosts
-          if currentDist < 2:
-            nearbyGhostScore += (0 / numOfGhosts)
-          elif currentDist < 5:
-            nearbyGhostScore += (25 / numOfGhosts)
-          else:
-            nearbyGhostScore += (50 / numOfGhosts)
-        nearbyGhostScore = min(nearbyGhostScore, 50)
+        import sys
+
+        foodDistances=[]
+        ghostDistances=[]
+
+        for ghost in successorGameState.getGhostPositions():
+            ghostDistances.append(manhattanDistance(ghost,newPos))
+        for food in newFood.asList():
+            foodDistances.append(manhattanDistance(food,newPos))
+
+        if currentGameState.getPacmanPosition()==newPos:
+            return(-(float("inf")))
+
+        for dist in ghostDistances:
+            if dist<2:
+                return sys.float_info.min
+        if len(foodDistances)==0:
+            return sys.float_info.max
+
+        return 1000/sum(foodDistances) + 10000/len(foodDistances)
         
-
-
-
-
-        # nearbyFoodScore = 0
-        # for foodPos in newFood.asList():
-        #   nearbyFoodScore += manhattanDistance(foodPos, newPos)
-        
-        
-        return nearbyGhostScore
 
 def scoreEvaluationFunction(currentGameState):
     """
