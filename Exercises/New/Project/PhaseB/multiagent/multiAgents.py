@@ -16,8 +16,6 @@ from util import manhattanDistance
 from game import Directions
 import random, util
 
-import sys
-
 from game import Agent
 
 class ReflexAgent(Agent):
@@ -39,7 +37,7 @@ class ReflexAgent(Agent):
         """
         # Collect legal moves and successor states
         legalMoves = gameState.getLegalActions()
-        
+
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
         bestScore = max(scores)
@@ -69,28 +67,9 @@ class ReflexAgent(Agent):
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
-        "*** CSD4406 CODE ***"
-        import sys
-
-        foodDistances=[]
-        ghostDistances=[]
-
-        for ghost in successorGameState.getGhostPositions():
-            ghostDistances.append(manhattanDistance(ghost,newPos))
-        for food in newFood.asList():
-            foodDistances.append(manhattanDistance(food,newPos))
-
-        if currentGameState.getPacmanPosition()==newPos:
-            return(-(float("inf")))
-
-        for dist in ghostDistances:
-            if dist<2:
-                return sys.float_info.min
-        if len(foodDistances)==0:
-            return sys.float_info.max
-
-        return 1000/sum(foodDistances) + 10000/len(foodDistances)
+        "*** YOUR CODE HERE ***"
         
+        return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState):
     """
